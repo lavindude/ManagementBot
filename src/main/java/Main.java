@@ -20,11 +20,12 @@ public class Main extends ListenerAdapter {
                 event.getAuthor().getName() + " \"" +
                 event.getMessage().getContentDisplay() + "\"   ------     channel: " + event.getChannel());
         String mes = event.getMessage().getContentRaw();
+
         if (mes.equals("!test1")) {
             event.getChannel().sendMessage("Welcome to this server!").queue();
         }
 
-        else if (mes.equals("!test2")) {
+        else if (mes.equals("!test21")) {
             event.getChannel().sendMessage("Pong!").queue();
         }
 
