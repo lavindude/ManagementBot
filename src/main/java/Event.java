@@ -3,24 +3,31 @@ public class Event {
     private String month;
     private int day;
     private int year;
-    private int hour;
-    private int minute;
+    private String subject;
+    private String time;
 
-    public Event(String s, String month, int day, int year, int hour, int minute) {
+    public Event(String s, String month, int day, int year, String subject, String time) {
         this.s = s;
         this.month = month;
         this.day = day;
         this.year = year;
-        this.hour = hour;
-        this.minute = minute;
+        this.subject = subject;
+        this.time = time;
 
         //throw exception for minutes?
+    }
+
+    public Event(String s, String month, int day, int year) {
+        this.s = s;
+        this.month = month;
+        this.day = day;
+        this.year = year;
     }
 
     public Event() {}
 
     public String toString() {
-        return (this.s + " is due: " + this.month + " " + this.day + "th, " + this.year + " at " + this.hour + this.minute);
+        return (this.s + " is on: " + this.month + " " + this.day + "th, " + this.year + " for " + this.subject + " (" + this.time + ")");
     }
 
     public void setS(String s) {
@@ -37,13 +44,5 @@ public class Event {
 
     public void setYear(int y) {
         this.year = y;
-    }
-
-    public void setHour(int h) {
-        this.hour = h;
-    }
-
-    public void setMinute(int m) {
-        this.minute = m;
     }
 }

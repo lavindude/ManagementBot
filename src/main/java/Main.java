@@ -1,46 +1,115 @@
+/* Tasks:
+    implement time limit
+    certain 
+    push to github
+ */
+
+import kotlin.ULong;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.exceptions.ErrorResponseException;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 import javax.security.auth.login.LoginException;
 import java.util.ArrayList;
 
+//listernerAdapter class
+// https://ci.dv8tion.net/job/JDA/javadoc/net/dv8tion/jda/api/hooks/ListenerAdapter.html
 public class Main extends ListenerAdapter {
     private ArrayList<Event> events = new ArrayList<Event>();
+    private ArrayList<String> spammer = new ArrayList<String>();
+    private ArrayList<Long> mesIDs = new ArrayList<Long>();
+    private ArrayList<Long> times = new ArrayList<Long>();
 
+    private int timesSworn = 0;
+    private long start = 0;
     public static void main(String[] args) throws LoginException {
         JDABuilder builder = new JDABuilder(AccountType.BOT);
         String token = "Njg4MTAyMzA1NjI2NTg3MTgy.XmvciQ.LwTLgmnkWZGdO1KDWTksRGCBGrI";
         builder.setToken(token);
         builder.addEventListener(new Main());
         builder.buildAsync();
+
     }
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
+        boolean allowSpam = false;
         System.out.println("We received a message from " +
                 event.getAuthor().getName() + " \"" +
                 event.getMessage().getContentDisplay() + "\"   ------     channel: " + event.getChannel());
 
         String mes = event.getMessage().getContentRaw();
 
+        String channel = "" + event.getMessage().getCategory().getTextChannels();
+        String user = "" + event.getAuthor().getName();
+        Long id = event.getChannel().getLatestMessageIdLong();
+
+        //spammer algorithm
+        System.out.println(channel);        
+
+        times.add(System.currentTimeMillis());
+
+        if (channel.substring(0, 11).equals("[TC:general") || channel.substring(0, 11).equals("[TC:bot-com")) {
+            allowSpam = true;
+        }
+
+        if (!allowSpam) {
+            if (times.size() >= 2) {
+                if (times.get(times.size() - 1) - times.get(times.size() - 2) > 5000) {
+                    allowSpam = true;
+                    spammer.clear();
+                    times.clear();
+                    mesIDs.clear();
+                }
+                
+            }
+
+            if (!allowSpam) {
+                int i = spammer.size() - 4;
+
+                spammer.add(user);
+                mesIDs.add(id);
+
+                if (spammer.size() > 4) {
+                    if (spammer.get(i).equals(spammer.get(i + 1)) && spammer.get(i).equals(spammer.get(i + 2)) && spammer.get(i).equals(spammer.get(i + 3)) && spammer.get(i).equals(spammer.get(i + 4))) {
+                        event.getChannel().sendMessage("Stop spamming!").queue();
+                        int k = i + 4;
+                        for (i = spammer.size() - 5; i < k; i++) {
+                            event.getChannel().deleteMessageById(mesIDs.get(i)).complete();
+                        }
+
+                        spammer.clear();
+                        mesIDs.clear();
+                    }
+                }
+            }
+        }
+
+
         int sub1 = mes.indexOf("!addEvent");
         int sub2 = mes.indexOf("!setMonth");
         int sub3 = mes.indexOf("!setDay");
         int sub4 = mes.indexOf("!setYear");
         int sub5 = mes.indexOf("!addEventManually");
-        int sub6 = mes.toLowerCase().indexOf("fuck");
-        int sub7 = mes.toLowerCase().indexOf("shit");
-        int sub8 = mes.toLowerCase().indexOf("pussy");
-        int sub9 = mes.toLowerCase().indexOf("ass");
-        int sub10 = mes.toLowerCase().indexOf("gay");
-        int sub11 = mes.toLowerCase().indexOf("jew");
-        int sub12 = mes.toLowerCase().indexOf("cum");
-        int sub13 = mes.toLowerCase().indexOf("penis");
-        int sub14 = mes.toLowerCase().indexOf("vagina");
 
-        if (sub1 != -1) {
+        Swears check = new Swears();
+        String swears = check.swear(mes);
+
+        if (swears.equals("No Swearing!")) {
+            event.getMessage().delete().queue();
+            event.getChannel().sendMessage("No swearing!").queue();
+            timesSworn++;
+        }
+
+        else if (swears.equals("Use the word 'homosexual' instead.")) {
+            event.getMessage().delete().queue();
+            event.getChannel().sendMessage("Use the word 'homosexual' instead.").queue();
+            timesSworn++;
+        }
+
+        else if (sub1 != -1) {
             Event e = new Event();
             events.add(e);
             Event edit = events.get(events.size() - 1);
@@ -73,58 +142,34 @@ public class Main extends ListenerAdapter {
             addEventManually(mes);
         }
 
-        //error with indexes maybe
-        else if (sub6 != -1) {
-            event.getChannel().sendMessage("No swearing!").queue();
-            event.getMessage().delete().queue();
+        if (timesSworn % 5 == 0 && timesSworn != 0) {
+            event.getChannel().sendMessage("What do you not get about not swearing?").queue();
+            timesSworn++;
         }
 
-        else if (sub7 != -1) {
-            event.getChannel().sendMessage("No swearing!").queue();
-            event.getMessage().delete().queue();
-        }
-
-        else if (sub8 != -1) {
-            event.getChannel().sendMessage("No swearing!").queue();
-            event.getMessage().delete().queue();
-        }
-
-        else if (sub9 != -1) {
-            event.getChannel().sendMessage("No swearing!").queue();
-            event.getMessage().delete().queue();
-        }
-
-        else if (sub10 != -1) {
-            event.getChannel().sendMessage("No swearing!").queue();
-            event.getMessage().delete().queue();
-        }
-
-        else if (sub11 != -1) {
-            event.getChannel().sendMessage("No swearing!").queue();
-            event.getMessage().delete().queue();
-        }
-
-        else if (sub12 != -1) {
-            event.getChannel().sendMessage("No swearing!").queue();
-            event.getMessage().delete().queue();
-        }
-
-        else if (sub13 != -1) {
-            event.getChannel().sendMessage("No swearing!").queue();
-            event.getMessage().delete().queue();
-        }
-
-        else if (sub14 != -1) {
-            event.getChannel().sendMessage("No swearing!").queue();
-            event.getMessage().delete().queue();
-        }
-
-        else if (mes.equals("!print")) {
+        else if (mes.equals("!printE")) {
+            setEventsE();
             for (Event e : events) {
                 String p = e.toString();
                 event.getChannel().sendMessage(p).queue();
             }
         }
+
+        else if (mes.equals("!p")) {
+        }
+
+        else if (mes.equals("!test")) {
+            event.getChannel().sendMessage("" + event.getChannel()).queue();
+        }
+
+    }
+
+    //manually enter events in code:
+    public void setEventsE() {
+        /*Event meeting = new Event("AP U1 Review Session", "March", 25, 2020, "AP European History", "3:45 - 5:00");
+        events.add(meeting);
+        meeting = new Event("AP U2 Review Session", "March", 26, 2020, "AP European History", "3:45 - 5:00");
+        events.add(meeting);*/
     }
 
     public void addEventManually(String mes) {
@@ -142,6 +187,7 @@ public class Main extends ListenerAdapter {
         int comma = rest2.indexOf(",");
         int sendDay = Integer.parseInt(mes.substring(space2, comma));
     }
+
 
 
 }
