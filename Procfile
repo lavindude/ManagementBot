@@ -1,1 +1,1 @@
-worker: java build.gradle
+worker: sh build.gradle
