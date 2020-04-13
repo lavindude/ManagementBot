@@ -5,7 +5,6 @@ plugins {
 
 task stage(dependsOn: ['build', 'clean'])
 build.mustRunAfter clean
-<<<<<<< HEAD
 
 task copyToLib(type: Copy) {
     into "$buildDir/libs"
@@ -13,9 +12,6 @@ task copyToLib(type: Copy) {
 }
 
 stage.dependsOn(copyToLib)
-=======
->>>>>>> d9c9b900aa680024e88fb806110d89635278b1f0
-
 group 'com.mywebsite'
 version '1.0-SNAPSHOT'
 
