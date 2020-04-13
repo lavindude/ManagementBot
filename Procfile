@@ -1,1 +1,1 @@
-worker: sh build.gradle
+worker: sh bin/main
