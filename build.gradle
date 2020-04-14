@@ -5,15 +5,15 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '5.2.0'
 }
 
-//task stage(dependsOn: ['build', 'clean'])
-//build.mustRunAfter clean
+task stage(dependsOn: ['build', 'clean'])
+build.mustRunAfter clean
 
-//task copyToLib(type: Copy) {
-//    into "$buildDir/libs"
-//    from(configurations.compile)
-//}
-//
-//stage.dependsOn(copyToLib)
+task copyToLib(type: Copy) {
+    into "$buildDir/libs"
+    from(configurations.compile)
+}
+
+stage.dependsOn(copyToLib)
 
 mainClassName = "Main"
 
