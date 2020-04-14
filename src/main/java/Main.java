@@ -4,7 +4,6 @@
     push to github
  */
 
-import kotlin.ULong;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -47,7 +46,6 @@ public class Main extends ListenerAdapter {
         Long id = event.getChannel().getLatestMessageIdLong();
 
         //spammer algorithm
-        System.out.println(channel);        
 
         times.add(System.currentTimeMillis());
 
