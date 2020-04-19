@@ -5,7 +5,10 @@
  */
 
 import net.dv8tion.jda.core.AccountType;
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
+import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.exceptions.ErrorResponseException;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -32,6 +35,14 @@ public class Main extends ListenerAdapter {
 
     }
 
+    //greet user
+    @Override
+    public void onGuildMemberJoin(GuildMemberJoinEvent event) {
+        EmbedBuilder join = new EmbedBuilder();
+        join.setDescription("Welcome to the IHS Server! Please look over the rules and then send a dm to a moderator or admin with your name so we know who you are. Once you are verified, you will be able to send messages. Go to the roles tab and add roles as you wish.");
+        event.getGuild().getDefaultChannel().sendMessage(join.build()).queue();
+    }
+
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         boolean allowSpam = false;
@@ -39,11 +50,17 @@ public class Main extends ListenerAdapter {
                 event.getAuthor().getName() + " \"" +
                 event.getMessage().getContentDisplay() + "\"   ------     channel: " + event.getChannel());
 
+        //ignore bots (including this one)
+        if (event.getAuthor().isBot()) {
+            return;
+        }
+
         String mes = event.getMessage().getContentRaw();
 
         String channel = "" + event.getMessage().getCategory().getTextChannels();
         String user = "" + event.getAuthor().getName();
         Long id = event.getChannel().getLatestMessageIdLong();
+
 
         //spammer algorithm
 
@@ -61,7 +78,7 @@ public class Main extends ListenerAdapter {
                     times.clear();
                     mesIDs.clear();
                 }
-                
+
             }
 
             if (!allowSpam) {
@@ -86,12 +103,9 @@ public class Main extends ListenerAdapter {
         }
 
 
-        int sub1 = mes.indexOf("!addEvent");
-        int sub2 = mes.indexOf("!setMonth");
-        int sub3 = mes.indexOf("!setDay");
-        int sub4 = mes.indexOf("!setYear");
-        int sub5 = mes.indexOf("!addEventManually");
 
+
+        //swearing algorithm
         Swears check = new Swears();
         String swears = check.swear(mes);
 
@@ -107,7 +121,19 @@ public class Main extends ListenerAdapter {
             timesSworn++;
         }
 
-        else if (sub1 != -1) {
+        if (timesSworn % 5 == 0 && timesSworn != 0) {
+            event.getChannel().sendMessage("What do you not get about not swearing?").queue();
+            timesSworn++;
+        }
+
+        //events
+        int sub1 = mes.indexOf("!addEvent");
+        int sub2 = mes.indexOf("!setMonth");
+        int sub3 = mes.indexOf("!setDay");
+        int sub4 = mes.indexOf("!setYear");
+        int sub5 = mes.indexOf("!addEventManually");
+
+        if (sub1 != -1) {
             Event e = new Event();
             events.add(e);
             Event edit = events.get(events.size() - 1);
@@ -140,10 +166,7 @@ public class Main extends ListenerAdapter {
             addEventManually(mes);
         }
 
-        if (timesSworn % 5 == 0 && timesSworn != 0) {
-            event.getChannel().sendMessage("What do you not get about not swearing?").queue();
-            timesSworn++;
-        }
+
 
         else if (mes.equals("!printE")) {
             setEventsE();
@@ -154,6 +177,7 @@ public class Main extends ListenerAdapter {
         }
 
         else if (mes.equals("!p")) {
+
         }
 
         else if (mes.equals("!test")) {
