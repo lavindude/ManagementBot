@@ -7,6 +7,7 @@
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.core.entities.Invite;
 import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -15,6 +16,7 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 import javax.security.auth.login.LoginException;
 import java.util.ArrayList;
+import java.util.List;
 
 //listernerAdapter class
 // https://ci.dv8tion.net/job/JDA/javadoc/net/dv8tion/jda/api/hooks/ListenerAdapter.html
@@ -62,11 +64,12 @@ public class Main extends ListenerAdapter {
         Long id = event.getChannel().getLatestMessageIdLong();
 
 
+        System.out.println(channel);
         //spammer algorithm
 
         times.add(System.currentTimeMillis());
 
-        if (channel.substring(0, 11).equals("[TC:general") || channel.substring(0, 11).equals("[TC:bot-com")) {
+        if (channel.contains("😀") || channel.contains("🧠") || channel.contains("🤖")) {
             allowSpam = true;
         }
 
