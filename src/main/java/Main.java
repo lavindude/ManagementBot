@@ -39,7 +39,7 @@ public class Main extends ListenerAdapter {
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         EmbedBuilder join = new EmbedBuilder();
-        join.setDescription("Welcome to the IHS Server! Please look over the rules and then send a dm to a moderator or admin with your name so we know who you are. Once you are verified, you will be able to send messages. Go to the roles tab and add roles as you wish.");
+        join.setDescription("Welcome to the IHS Server! Please look over the rules and then send a dm to an admin with your name so we know who you are. Once you are verified, you will be able to send messages. Go to the roles tab and add roles as you wish.");
         event.getGuild().getDefaultChannel().sendMessage(join.build()).queue();
     }
 
