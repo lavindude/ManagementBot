@@ -47,15 +47,17 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
+        //ignore bots (including this one)
+        if (event.getAuthor().isBot()) {
+            return;
+        }
+
         boolean allowSpam = false;
         System.out.println("We received a message from " +
                 event.getAuthor().getName() + " \"" +
                 event.getMessage().getContentDisplay() + "\"   ------     channel: " + event.getChannel());
 
-        //ignore bots (including this one)
-        if (event.getAuthor().isBot()) {
-            return;
-        }
+
 
         String mes = event.getMessage().getContentRaw();
 
@@ -64,7 +66,6 @@ public class Main extends ListenerAdapter {
         Long id = event.getChannel().getLatestMessageIdLong();
 
 
-        System.out.println(channel);
         //spammer algorithm
 
         times.add(System.currentTimeMillis());
@@ -85,16 +86,16 @@ public class Main extends ListenerAdapter {
             }
 
             if (!allowSpam) {
-                int i = spammer.size() - 4;
+                int i = spammer.size() - 3;
 
                 spammer.add(user);
                 mesIDs.add(id);
 
-                if (spammer.size() > 4) {
-                    if (spammer.get(i).equals(spammer.get(i + 1)) && spammer.get(i).equals(spammer.get(i + 2)) && spammer.get(i).equals(spammer.get(i + 3)) && spammer.get(i).equals(spammer.get(i + 4))) {
+                if (spammer.size() >= 4) {
+                    if (spammer.get(i).equals(spammer.get(i + 1)) && spammer.get(i).equals(spammer.get(i + 2)) && spammer.get(i).equals(spammer.get(i + 3))) {
                         event.getChannel().sendMessage("Stop spamming!").queue();
-                        int k = i + 4;
-                        for (i = spammer.size() - 5; i < k; i++) {
+                        int k = i + 3;
+                        for (i = spammer.size() - 4; i < k; i++) {
                             event.getChannel().deleteMessageById(mesIDs.get(i)).complete();
                         }
 
