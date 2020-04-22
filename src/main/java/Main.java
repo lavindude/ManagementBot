@@ -65,12 +65,12 @@ public class Main extends ListenerAdapter {
         String user = "" + event.getAuthor().getName();
         Long id = event.getChannel().getLatestMessageIdLong();
 
-
+        System.out.println(channel);
         //spammer algorithm
 
         times.add(System.currentTimeMillis());
 
-        if (channel.contains("😀") || channel.contains("🧠") || channel.contains("🤖")) {
+        if (channel.contains("😀") || channel.contains("🧠") || channel.contains("🤖") || channel.contains("cabinet")) {
             allowSpam = true;
         }
 
