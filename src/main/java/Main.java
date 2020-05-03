@@ -1,22 +1,21 @@
-/* Tasks:
-    implement time limit
-    certain 
-    push to github
- */
+/*
+    clear arraylists at 4am everyday
+    detect spam from one channel
+*/
 
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.JDABuilder;
-import net.dv8tion.jda.core.entities.Invite;
+import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.exceptions.ErrorResponseException;
+import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 import javax.security.auth.login.LoginException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 //listernerAdapter class
 // https://ci.dv8tion.net/job/JDA/javadoc/net/dv8tion/jda/api/hooks/ListenerAdapter.html
@@ -25,16 +24,44 @@ public class Main extends ListenerAdapter {
     private ArrayList<String> spammer = new ArrayList<String>();
     private ArrayList<Long> mesIDs = new ArrayList<Long>();
     private ArrayList<Long> times = new ArrayList<Long>();
+    private ArrayList<String> members = new ArrayList<String>();
+    private ArrayList<MessageChannel> channels = new ArrayList<MessageChannel>();
+    //private ArrayList<String> messages = new ArrayList<String>();
 
     private int timesSworn = 0;
     private long start = 0;
     public static void main(String[] args) throws LoginException {
         JDABuilder builder = new JDABuilder(AccountType.BOT);
-        String token = "CONFIDENTIAL";
+        String token = "Njg4MTAyMzA1NjI2NTg3MTgy.XqJrmA.weis8sSEjNstZER1NjGgwAtF1g8";
         builder.setToken(token);
         builder.addEventListener(new Main());
         builder.buildAsync();
 
+        //clear ArrayLists at 4am everyday
+        Timer timer = new Timer();
+        TimerTask tt = new TimerTask(){
+            public void run(){
+                Calendar cal = Calendar.getInstance(); //this is the method you should use, not the Date(), because it is desperated.
+
+                int hour = cal.get(Calendar.HOUR_OF_DAY);//get the hour number of the day, from 0 to 23
+
+                if(hour == 4){
+                    System.out.println("doing the scheduled task");
+                }
+            }
+        };
+
+        timer.schedule(tt, 1000, 1000*5);
+    }
+
+    //if you need to send a private message to someone
+    public void sendPrivateMessage(User user, String content) {
+        // openPrivateChannel provides a RestAction<PrivateChannel>
+        // which means it supplies you with the resulting channel
+        user.openPrivateChannel().queue((channel) ->
+        {
+            channel.sendMessage(content).queue();
+        });
     }
 
     //greet user
@@ -59,20 +86,34 @@ public class Main extends ListenerAdapter {
 
 
 
+
+
         String mes = event.getMessage().getContentRaw();
 
         String channel = "" + event.getMessage().getCategory().getTextChannels();
         String user = "" + event.getAuthor().getName();
         Long id = event.getChannel().getLatestMessageIdLong();
 
-        System.out.println(channel);
-        //spammer algorithm
+        //debug: System.out.println(channel);
 
+        //spammer algorithm
         times.add(System.currentTimeMillis());
 
         if (channel.contains("😀") || channel.contains("🧠") || channel.contains("🤖") || channel.contains("cabinet")) {
             allowSpam = true;
         }
+
+        //to detect from one channel
+//        else {
+//            channels.add(event.getChannel());
+//
+//            int checker2 = channels.size();
+//            if (checker2 >= 4) {
+//                if (channels.get(checker2 - 1) != channels.get(checker2 - 2) && channels.get(checker2 - 1) != channels.get(checker2 - 3) && channels.get(checker2 - 1) != channels.get(checker2 - 4)) {
+//                    allowSpam = true;
+//                }
+//            }
+//        }
 
         if (!allowSpam) {
             if (times.size() >= 2) {
@@ -81,6 +122,7 @@ public class Main extends ListenerAdapter {
                     spammer.clear();
                     times.clear();
                     mesIDs.clear();
+                    channels.clear();
                 }
 
             }
@@ -101,12 +143,36 @@ public class Main extends ListenerAdapter {
 
                         spammer.clear();
                         mesIDs.clear();
+                        members.add(event.getAuthor().getName());
                     }
                 }
             }
         }
 
+        int checker = members.size();
 
+        if (members.size() >= 2) {
+            if (members.get(checker - 1).equals(members.get(checker - 2))) {
+                event.getChannel().sendMessage("Stop spamming! [muted]").queue();
+                User user1 = event.getAuthor();
+                sendPrivateMessage(user1, "You have been muted. Please wait until one of the staff reviews your actions.");
+
+                //notify admin
+                User a1 = event.getJDA().getUserById("355917314115371009");
+                sendPrivateMessage(a1, event.getAuthor() + " was muted.");
+
+                User a2 = event.getJDA().getUserById("290287999583780864");
+                sendPrivateMessage(a2, event.getAuthor() + " was muted.");
+
+                User a3 = event.getJDA().getUserById("291709610270654474");
+                sendPrivateMessage(a3, event.getAuthor() + " was muted.");
+
+                //remove cool role
+                event.getGuild().getController().removeRolesFromMember(event.getMember(), event.getJDA().getRolesByName("Cool", true)).complete();
+
+                members.clear();
+            }
+        }
 
 
         //swearing algorithm
@@ -190,7 +256,10 @@ public class Main extends ListenerAdapter {
 
     }
 
-    //manually enter events in code:
+
+    //adding events in a server:
+
+    //manually enter events in code, make database or excel file?
     public void setEventsE() {
         /*Event meeting = new Event("AP U1 Review Session", "March", 25, 2020, "AP European History", "3:45 - 5:00");
         events.add(meeting);
