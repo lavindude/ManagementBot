@@ -32,7 +32,7 @@ public class Main extends ListenerAdapter {
     private long start = 0;
     public static void main(String[] args) throws LoginException {
         JDABuilder builder = new JDABuilder(AccountType.BOT);
-        String token = "Njg4MTAyMzA1NjI2NTg3MTgy.XqJrmA.weis8sSEjNstZER1NjGgwAtF1g8";
+        String token = "secret";
         builder.setToken(token);
         builder.addEventListener(new Main());
         builder.buildAsync();
