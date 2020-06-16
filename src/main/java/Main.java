@@ -99,21 +99,10 @@ public class Main extends ListenerAdapter {
         //spammer algorithm
         times.add(System.currentTimeMillis());
 
+        //allows spam in these channels
         if (channel.contains("😀") || channel.contains("🧠") || channel.contains("🤖") || channel.contains("cabinet")) {
             allowSpam = true;
         }
-
-        //to detect from one channel
-//        else {
-//            channels.add(event.getChannel());
-//
-//            int checker2 = channels.size();
-//            if (checker2 >= 4) {
-//                if (channels.get(checker2 - 1) != channels.get(checker2 - 2) && channels.get(checker2 - 1) != channels.get(checker2 - 3) && channels.get(checker2 - 1) != channels.get(checker2 - 4)) {
-//                    allowSpam = true;
-//                }
-//            }
-//        }
 
         if (!allowSpam) {
             if (times.size() >= 2) {
@@ -175,28 +164,9 @@ public class Main extends ListenerAdapter {
         }
 
 
-        //swearing algorithm
-        Swears check = new Swears();
-        String swears = check.swear(mes);
 
-        if (swears.equals("No Swearing!")) {
-            event.getMessage().delete().queue();
-            event.getChannel().sendMessage("No swearing!").queue();
-            timesSworn++;
-        }
 
-        else if (swears.equals("Use the word 'homosexual' instead.")) {
-            event.getMessage().delete().queue();
-            event.getChannel().sendMessage("Use the word 'homosexual' instead.").queue();
-            timesSworn++;
-        }
-
-        if (timesSworn % 5 == 0 && timesSworn != 0) {
-            event.getChannel().sendMessage("What do you not get about not swearing?").queue();
-            timesSworn++;
-        }
-
-        //events
+        //events (not too much demand for this command so not fully implemented)
         int sub1 = mes.indexOf("!addEvent");
         int sub2 = mes.indexOf("!setMonth");
         int sub3 = mes.indexOf("!setDay");
