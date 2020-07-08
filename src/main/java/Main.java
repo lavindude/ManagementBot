@@ -164,9 +164,7 @@ public class Main extends ListenerAdapter {
         }
 
 
-
-
-        //events (not too much demand for this command so not fully implemented)
+        //events 
         int sub1 = mes.indexOf("!addEvent");
         int sub2 = mes.indexOf("!setMonth");
         int sub3 = mes.indexOf("!setDay");
