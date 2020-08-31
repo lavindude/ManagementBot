@@ -1,8 +1,3 @@
-/*
-    clear arraylists at 4am everyday
-    detect spam from one channel
-*/
-
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.JDABuilder;
@@ -26,7 +21,6 @@ public class Main extends ListenerAdapter {
     private ArrayList<Long> times = new ArrayList<Long>();
     private ArrayList<String> members = new ArrayList<String>();
     private ArrayList<MessageChannel> channels = new ArrayList<MessageChannel>();
-    //private ArrayList<String> messages = new ArrayList<String>();
 
     private int timesSworn = 0;
     private long start = 0;
