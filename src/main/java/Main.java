@@ -220,8 +220,6 @@ public class Main extends ListenerAdapter {
 
 
     //adding events in a server:
-
-    //manually enter events in code, make database or excel file?
     public void setEventsE() {
         /*Event meeting = new Event("AP U1 Review Session", "March", 25, 2020, "AP European History", "3:45 - 5:00");
         events.add(meeting);
@@ -230,7 +228,6 @@ public class Main extends ListenerAdapter {
     }
 
     public void addEventManually(String mes) {
-        //check for logic errors, there is a logic error with the cursor variable, need to fix
         int cursor = 18;
         String rest1 = mes.substring(cursor);
         int space1 = rest1.indexOf(" ");
